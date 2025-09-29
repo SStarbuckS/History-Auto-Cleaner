@@ -322,9 +322,9 @@ async function toggleUnlockState() {
         
         // 显示提示信息
         if (config.isUnlocked) {
-            showToast('已解锁隐藏域名', 'success');
+            showToast('发现了新大陆~', 'success');
         } else {
-            showToast('已隐藏敏感域名', 'success');
+            showToast('再度扬帆起航~', 'success');
         }
         
     } catch (error) {

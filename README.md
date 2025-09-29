@@ -2,6 +2,14 @@
 
 一个 Chrome 扩展，自动删除指定域名的浏览历史记录。
 
+<p align="center">
+  <img src="img/1.png" alt="收起隐藏页面" width="800"/>
+</p>
+
+<p align="center">
+  <img src="img/2.png" alt="展开隐藏页面" width="800"/>
+</p>
+
 ## 功能特性
 
 - **自动历史清理**：访问配置的域名时，自动删除浏览历史记录  
