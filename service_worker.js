@@ -108,6 +108,7 @@ async function deleteUrlFromHistory(url) {
 
 /**
  * 处理导航提交事件（页面开始导航时触发）
+ * 主要用于传统的多页应用（MPA）导航
  */
 async function handleNavigationCommitted(details) {
   // 只处理主框架的导航（忽略 iframe 等）
@@ -129,6 +130,54 @@ async function handleNavigationCommitted(details) {
 }
 
 /**
+ * 处理历史状态更新事件（SPA 路由切换时触发）
+ * 主要用于单页应用（SPA）的路由变化，如使用 pushState/replaceState 的路由
+ */
+async function handleHistoryStateUpdated(details) {
+  // 只处理主框架的导航（忽略 iframe 等）
+  if (details.frameId !== 0) return;
+  
+  const url = details.url;
+  const allDomains = getAllDomains();
+  
+  // 只有匹配到配置域名时才处理和输出日志
+  if (isUrlMatched(url, allDomains)) {
+    console.log('History state updated (SPA navigation, matched):', url);
+    console.log('SPA URL matches domain, will delete from history:', url);
+    
+    // SPA 路由切换后延迟删除，确保历史记录已经写入
+    // 对于 SPA，延迟时间可以稍短一些，因为不需要加载新页面
+    setTimeout(async () => {
+      await deleteUrlFromHistory(url);
+    }, 1000);
+  }
+}
+
+/**
+ * 处理引用片段更新事件（hash 路由变化时触发）
+ * 主要用于单页应用（SPA）的 hash 路由变化，如 #/route1 到 #/route2
+ */
+async function handleReferenceFragmentUpdated(details) {
+  // 只处理主框架的导航（忽略 iframe 等）
+  if (details.frameId !== 0) return;
+  
+  const url = details.url;
+  const allDomains = getAllDomains();
+  
+  // 只有匹配到配置域名时才处理和输出日志
+  if (isUrlMatched(url, allDomains)) {
+    console.log('Reference fragment updated (hash navigation, matched):', url);
+    console.log('Hash URL matches domain, will delete from history:', url);
+    
+    // Hash 路由切换后延迟删除，确保历史记录已经写入
+    // Hash 路由变化通常很快，延迟时间可以更短
+    setTimeout(async () => {
+      await deleteUrlFromHistory(url);
+    }, 1000);
+  }
+}
+
+/**
  * 处理存储变化事件，更新缓存配置
  */
 function handleStorageChanged(changes, namespace) {
@@ -143,6 +192,8 @@ function handleStorageChanged(changes, namespace) {
 
 // 注册事件监听器
 chrome.webNavigation.onCommitted.addListener(handleNavigationCommitted);
+chrome.webNavigation.onHistoryStateUpdated.addListener(handleHistoryStateUpdated);
+chrome.webNavigation.onReferenceFragmentUpdated.addListener(handleReferenceFragmentUpdated);
 chrome.storage.onChanged.addListener(handleStorageChanged);
 
 // Service Worker 启动时初始化
