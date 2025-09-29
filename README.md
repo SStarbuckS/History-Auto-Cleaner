@@ -35,6 +35,26 @@ History Auto Cleaner/
 | `webNavigation` | 监听页面导航事件 |
 | `host_permissions: *://*/*` | 访问所有网站以监听导航事件 |
 
+## 数据格式
+
+```json
+{
+    "isUnlocked": false,
+    "privateDomains": {
+      "example.com": true,
+      "*.test.org": false,
+      "subdomain.site.net": false,
+      "*.private.*": false
+    }
+}
+```
+
+**数据结构说明**：
+- **单一存储键**：使用 `privateDomains` 统一存储所有配置
+- **对象映射**：域名作为键，布尔值作为值（`true`=显示，`false`=隐藏）
+- **O(1) 查询**：使用对象结构提高查询效率
+- **状态集成**：`isUnlocked` 控制隐藏域名的显示状态
+
 ## 安装方法
 
 ### 作为 Unpacked Extension 加载
@@ -60,12 +80,12 @@ History Auto Cleaner/
 
 ### 支持的域名格式
 
-| 格式 | 说明 | 匹配示例 | 注意事项 |
-|------|------|----------|----------|
-| `example.com` | 精确匹配 | `example.com` | - |
-| `*.example.com` | 通配符匹配 | `example.com`, `www.example.com`, `api.example.com` | - |
-| `*.example.*` | 多级通配符 | `www.example.org`, `api.example.net` | - |
-| `subdomain.example.org` | 特定子域名 | `subdomain.example.org` | - |
+| 格式 | 说明 | 匹配示例 |
+|------|------|----------|
+| `example.com` | 精确匹配 | `example.com` |
+| `*.example.com` | 通配符匹配 | `example.com`, `www.example.com`, `api.example.com` |
+| `*.example.*` | 多级通配符 | `www.example.org`, `api.example.net` |
+| `subdomain.example.org` | 特定子域名 | `subdomain.example.org` |
 
 ### 配置文件编辑
 
@@ -90,28 +110,6 @@ History Auto Cleaner/
 1. **监听导航**：扩展监听所有页面导航事件（`webNavigation.onCommitted`）
 2. **模式匹配**：检查访问的 URL 是否匹配配置的域名模式
 3. **延迟删除**：匹配成功后，延迟 1000ms 删除历史记录（确保记录已写入）
-
-## 存储结构
-
-### 数据格式
-
-```json
-{
-    "isUnlocked": false,
-    "privateDomains": {
-      "example.com": true,
-      "*.test.org": false,
-      "subdomain.site.net": false,
-      "*.private.*": false
-    }
-}
-```
-
-**数据结构说明**：
-- **单一存储键**：使用 `privateDomains` 统一存储所有配置
-- **对象映射**：域名作为键，布尔值作为值（`true`=显示，`false`=隐藏）
-- **O(1) 查询**：使用对象结构提高查询效率
-- **状态集成**：`isUnlocked` 控制隐藏域名的显示状态
 
 ## 技术细节
 
