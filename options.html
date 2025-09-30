@@ -191,6 +191,7 @@
 
         .unlocked-section {
             margin-top: 20px;
+            margin-bottom: 20px;
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 6px;
@@ -316,10 +317,10 @@
             background-color: #218838;
         }
 
-        /* 页面右下角的状态提示 */
+        /* 页面右上角的状态提示 */
         .toast-notification {
             position: absolute; /* Changed from fixed to absolute */
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             padding: 12px 20px;
             border-radius: 6px;
@@ -328,7 +329,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(-20px);
             transition: all 0.3s ease;
             max-width: 300px;
             word-wrap: break-word;
@@ -384,18 +385,19 @@
 
         <div class="domain-list">
             <h3>已配置的域名：</h3>
+            
+            <!-- 解锁状态下的高级功能 -->
+            <div class="unlocked-section" id="unlockedSection" style="display: none;">
+                <h4>高级功能已解锁</h4>
+                <p>您现在可以编辑配置文件，进行高级管理操作。</p>
+                <button id="configFileBtn" class="config-file-btn">配置文件</button>
+            </div>
+            
             <div id="domainContainer">
                 <div class="empty-state">
                     暂无配置的域名
                 </div>
             </div>
-        </div>
-
-        <!-- 解锁状态下的高级功能 -->
-        <div class="unlocked-section" id="unlockedSection" style="display: none;">
-            <h4>高级功能已解锁</h4>
-            <p>您现在可以编辑配置文件，进行高级管理操作。</p>
-            <button id="configFileBtn" class="config-file-btn">配置文件</button>
         </div>
 
         <div class="footer">
@@ -419,7 +421,7 @@
         </div>
     </div>
 
-    <!-- 页面右下角提示框 -->
+    <!-- 页面右上角提示框 -->
     <div class="toast-notification" id="toastNotification"></div>
 
     <script src="options.js"></script>
