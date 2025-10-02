@@ -361,6 +361,44 @@ async function toggleDomainHidden(domain) {
 }
 
 /**
+ * 访问域名
+ */
+function visitDomain(domain) {
+    try {
+        let targetDomain = '';
+        
+        // 处理 example.com 格式
+        if (!domain.includes('*')) {
+            targetDomain = domain;
+        }
+        // 处理 *.example.com 格式
+        else if (domain.startsWith('*.') && domain.split('*').length === 2) {
+            // 去掉 *. 前缀
+            const baseDomain = domain.substring(2);
+            // 检查剩余部分是否还包含通配符
+            if (!baseDomain.includes('*')) {
+                targetDomain = baseDomain;
+            }
+        }
+        
+        if (targetDomain) {
+            // 添加协议前缀，避免被当作相对路径
+            const url = `http://${targetDomain}`;
+            
+            // 在新标签页中打开
+            chrome.tabs.create({ url: url });
+            console.log(`Opening URL: ${url}`);
+        } else {
+            showToast('不支持打开此域名', 'error');
+            console.log(`Cannot open domain pattern: ${domain}`);
+        }
+    } catch (error) {
+        console.error('Failed to visit domain:', error);
+        showToast('打开域名失败：' + error.message, 'error');
+    }
+}
+
+/**
  * 显示域名列表
  */
 function displayDomains() {
@@ -392,6 +430,7 @@ function displayDomains() {
                 </div>
                 <div class="domain-actions">
                     ${hideButton}
+                    <button class="visit-btn" data-domain="${escapeHtml(domain)}" data-action="visit">访问</button>
                     <button class="delete-btn" data-domain="${escapeHtml(domain)}" data-action="delete">删除</button>
                 </div>
             </div>
@@ -411,6 +450,8 @@ function displayDomains() {
                 deleteDomain(domain);
             } else if (action === 'toggle-hide') {
                 toggleDomainHidden(domain);
+            } else if (action === 'visit') {
+                visitDomain(domain);
             }
         });
     });
